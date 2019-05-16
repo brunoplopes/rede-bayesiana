@@ -5,23 +5,30 @@ from sklearn.tree import DecisionTreeClassifier
 
 #load data from flat file
 
-df=pd.read_csv("bank.csv",sep=';')
+df=pd.read_csv("dados_candidatos_balanceados_pra_teste.csv")
 df.dropna(inplace=True)
 
+colunas = [
+    'cargo',
+    'atv_prof',
+    'tec',
+    'sup',
+    'pos',
+    'quali_prof',
+    'quali_prof_tags',
+    'classe']
+df = df[colunas]
 
-#set the label colomne 
-label_name = 'y'
-df.sort([label_name], ascending=[True], inplace=True)
+label_name = 'classe'
+
 df= df.sort_index(by=[label_name], ascending=[True])
 
-features = (df.drop(label_name,axis=1).columns.values)
+features = (df.drop([label_name],axis=1).columns.values)
 
 is_number = np.vectorize(lambda x: np.issubdtype(x, np.number))
 boolfeatures= is_number(df.drop(label_name,axis=1).dtypes)
 
 df_dummy = pd.get_dummies(df.drop(label_name,axis=1),prefix_sep='_-_')
-
-
 
 
 def generator_1(clf, features, labels,original_features, node_index=0,side=0):
